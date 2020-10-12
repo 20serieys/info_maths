@@ -67,3 +67,5 @@ display_contour(
     levels=10 # 10 levels, automatically selected
 )
 plt.show()
+
+#che je vais gagner
