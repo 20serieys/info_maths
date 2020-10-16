@@ -44,9 +44,9 @@ def display_contour(f, x, y, levels):
 
 
 def f1(x1, x2):
-    x1 = np.array(x1)
-    x2 = np.array(x2)
-    return 3.0 * x1 * x1 - 2.0 * x1 * x2 + 3.0 * x2 * x2 
+    # x1 = np.array(x1)
+    # x2 = np.array(x2)
+    return np.array([3.0 * x1 * x1 - 2.0 * x1 * x2 + 3.0 * x2 * x2, 1])
 
 def f2(x1, x2):
     return (x1 - 1)**2 + (x1 - x2**2)**2
@@ -57,15 +57,22 @@ def f3(x, y):
 def f4(x,y):
     return x**2 + y**2
 
+def f5(x,y):
+    return np.array([np.sin(x),np.sin(y)])
 
+N=100
+eps=10**(-2)
 
+def Newton(F, x0, y0, eps=eps, N=N):
+    JF=J(F)
+    for i in range(N):
+        X0 = np.array([x0,y0])
+        X= X0 - np.linalg.inv(JF(x0,y0)).dot(F(x0,y0))
+        x,y = X
+        if np.sqrt((x - x0)**2 + (y - y0)**2) <= eps:
+            return (x, y),f'atteint en {i} étapes'
+        x0, y0 = x, y
+    else:
+        raise ValueError(f"no convergence in {N} steps.")
 
-display_contour(
-    f4, 
-    x=np.linspace(-5.0, 5.0, 100), 
-    y=np.linspace(-5.0, 5.0, 100), 
-    levels=10 # 10 levels, automatically selected
-)
-plt.show()
-
-#che je vais gagner
+print(Newton(f1, 0.9, 0.8))
