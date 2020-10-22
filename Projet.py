@@ -46,7 +46,7 @@ def display_contour(f, x, y, levels):
 def f1(x1, x2):
     # x1 = np.array(x1)
     # x2 = np.array(x2)
-    return np.array([3.0 * x1 * x1 - 2.0 * x1 * x2 + 3.0 * x2 * x2, x1])
+    return 3.0 * x1 * x1 - 2.0 * x1 * x2 + 3.0 * x2 * x2
 
 def f2(x1, x2):
     return (x1 - 1)**2 + (x1 - x2**2)**2
@@ -75,4 +75,3 @@ def Newton(F, x0, y0, eps=eps, N=N):
     else:
         raise ValueError(f"no convergence in {N} steps.")
 
-print(Newton(f1, 0.9, 0.8, 10**-4))
