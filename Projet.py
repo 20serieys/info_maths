@@ -60,18 +60,37 @@ def f4(x,y):
 def f5(x,y):
     return np.array([np.sin(x),np.sin(y)])
 
-N=100
-eps=10**(-2)
+N_newt=100
+eps_newt=10**(-2)
 
-def Newton(F, x0, y0, eps=eps, N=N):
+def Newton(F, x0, y0, eps=eps_newt, N=N_newt):
     JF=J(F)
     for i in range(N):
         X0 = np.array([x0,y0])
         X= X0 - np.linalg.inv(JF(x0,y0)).dot(F(x0,y0))
         x,y = X
         if np.sqrt((x - x0)**2 + (y - y0)**2) <= eps:
-            return f'{(x, y)} atteint en {i} étapes'
+            return (x, y), f'atteint en {i} étapes'
         x0, y0 = x, y
     else:
         raise ValueError(f"no convergence in {N} steps.")
 
+def level_curve(f, x0, y0, delta=0.1, N=1000, eps=eps_newt):
+    c = f(x0, y0)
+    def f_delta(x,y):
+        return np.array([f(x,y) - c, (x-x0)**2 + (y-y0)**2 - delta**2])
+    grad_f = grad(f)
+    Jf = J(f)
+    X, Y = [x0], [y0]
+    for i in range(N-1):
+        dx, dy = grad_f(x0, y0)
+        norme = np.sqrt(dx**2 + dy**2)
+        x, y = Newton(f_delta, x0 + delta*dy/norme, y0 - delta*dx/norme, eps=eps)[0]
+        X.append(x)
+        Y.append(y)
+        x0, y0 = x, y
+    return np.array([X, Y])
+
+courbe = level_curve(f3, 0., 0., N=10)
+plt.scatter(courbe[0], courbe[1])
+plt.show()
