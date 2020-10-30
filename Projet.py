@@ -91,6 +91,33 @@ def level_curve(f, x0, y0, delta=0.1, N=1000, eps=eps_newt):
         x0, y0 = x, y
     return np.array([X, Y])
 
-courbe = level_curve(f3, 0., 0., N=10)
-plt.scatter(courbe[0], courbe[1])
-plt.show()
+# courbe = level_curve(f3, 0., 0., N=10)
+# plt.scatter(courbe[0], courbe[1])
+# plt.show()
+
+
+def seg_inter(seg1 : np.ndarray, seg2 : np.ndarray):
+    point1, point2 = seg1
+    point3, point4 = seg2
+    d1 = point2 - point1 # dy*y + dx*x = c
+    d2 = point4 - point3
+    c1 = np.vdot(d1, point1)
+    c2 = np.vdot(d2, point3)
+    # on veut déterminer le croisement des deux droites : AX = B
+    A = np.array([d1, d2])
+    B = np.array([c1, c2])
+    try :
+        inter = np.linalg.inv(A).dot(B)
+    except numpy.linalg.LinAlgError:
+        if point1 == point3 or point2 == point4 :
+            print('exc')
+            return True
+        return False
+    if (np.minimum(point1, point2) <= inter).all() and (inter <= np.maximum(point1, point2)).all():
+        print('norm')
+        return True
+    return False
+
+seg1 = np.array([[0,1],[1,0]])
+seg2 = np.array([[0,0],[1,1]])
+print(seg_inter(seg1, seg2))
